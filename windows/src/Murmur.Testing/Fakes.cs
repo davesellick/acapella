@@ -77,6 +77,9 @@ public sealed class FakeAudioCapture : IAudioCapture
     /// <summary>Set to simulate the OS feeding silence because the microphone is blocked.</summary>
     public bool LooksLikeBlockedMicrophone { get; set; }
 
+    /// <summary>Set to simulate what the Windows privacy switches say.</summary>
+    public MicrophonePrivacy? Privacy { get; set; }
+
     /// <inheritdoc />
     public async IAsyncEnumerable<AudioChunk> CaptureAsync(
         [EnumeratorCancellation] CancellationToken cancellationToken)

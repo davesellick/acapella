@@ -52,6 +52,16 @@ public interface IAudioCapture : IAsyncDisposable
     /// </remarks>
     bool LooksLikeBlockedMicrophone { get; }
 
+    /// <summary>
+    /// The microphone switches in Windows privacy settings, or null when they cannot be read.
+    /// </summary>
+    /// <remarks>
+    /// Exact zeros are also what a microphone muted at the hardware gives: a Wave XLR with
+    /// its dial tapped red sent them on 2026-10-17 while every switch was on, and the panel
+    /// blamed Windows. Reading the switches is what tells the two apart.
+    /// </remarks>
+    MicrophonePrivacy? Privacy => null;
+
     /// <summary>Starts capture and yields chunks until cancelled.</summary>
     IAsyncEnumerable<AudioChunk> CaptureAsync(CancellationToken cancellationToken);
 
@@ -60,6 +70,23 @@ public interface IAudioCapture : IAsyncDisposable
     /// from before the key press that a warm implementation keeps. Zero for a plain device.
     /// </summary>
     TimeSpan PreRollDelivered => TimeSpan.Zero;
+}
+
+/// <summary>
+/// The three switches under Settings → Privacy &amp; security → Microphone, as Windows stores
+/// them: "Allow", "Deny", or null when Windows has never written one.
+/// </summary>
+/// <param name="Device">"Microphone access", for the whole machine.</param>
+/// <param name="Apps">"Let apps access your microphone".</param>
+/// <param name="DesktopApps">"Let desktop apps access your microphone", the one Acapella needs.</param>
+public sealed record MicrophonePrivacy(string? Device, string? Apps, string? DesktopApps)
+{
+    /// <summary>True when any of the three is switched off.</summary>
+    /// <remarks>A switch Windows never wrote is on: that is the default.</remarks>
+    public bool Blocks => IsDenied(Device) || IsDenied(Apps) || IsDenied(DesktopApps);
+
+    private static bool IsDenied(string? value) =>
+        string.Equals(value, "Deny", StringComparison.OrdinalIgnoreCase);
 }
 
 /// <summary>One microphone the OS knows about.</summary>

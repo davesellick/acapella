@@ -92,6 +92,9 @@ public sealed class WarmAudioCapture : IAudioCapture
     public bool LooksLikeBlockedMicrophone => _inner.LooksLikeBlockedMicrophone;
 
     /// <inheritdoc />
+    public MicrophonePrivacy? Privacy => _inner.Privacy;
+
+    /// <inheritdoc />
     public TimeSpan PreRollDelivered { get; private set; }
 
     /// <summary>

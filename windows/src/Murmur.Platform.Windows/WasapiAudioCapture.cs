@@ -54,11 +54,41 @@ public sealed class WasapiAudioCapture : IAudioCapture
     /// </summary>
     /// <remarks>
     /// When "Let desktop apps access your microphone" is off, WASAPI does not fail — it
-    /// returns a stream of digital silence. There is no documented way for an unpackaged app
-    /// to query that setting, so exact-zero samples are the only available signal. Real
-    /// microphones have a noise floor, so a run of *precisely* zero is a reliable tell.
+    /// returns a stream of digital silence. Real microphones have a noise floor, so a run of
+    /// *precisely* zero is a reliable tell — of that switch or of a hardware mute, which
+    /// <see cref="Privacy"/> tells apart.
     /// </remarks>
     public bool LooksLikeBlockedMicrophone { get; private set; }
+
+    private const string ConsentStore =
+        @"Software\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\microphone";
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// Read from the consent store the Settings page writes. Undocumented, so any failure
+    /// returns null and the caller keeps its old guess.
+    /// </remarks>
+    public MicrophonePrivacy? Privacy
+    {
+        get
+        {
+            try
+            {
+                using var machine = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(ConsentStore);
+                using var user = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(ConsentStore);
+                using var desktop = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(ConsentStore + @"\NonPackaged");
+                if (machine is null && user is null && desktop is null) return null;
+                return new MicrophonePrivacy(
+                    machine?.GetValue("Value") as string,
+                    user?.GetValue("Value") as string,
+                    desktop?.GetValue("Value") as string);
+            }
+            catch (Exception ex) when (ex is System.Security.SecurityException or UnauthorizedAccessException or IOException)
+            {
+                return null;
+            }
+        }
+    }
 
     private int _consecutiveSilentChunks;
 

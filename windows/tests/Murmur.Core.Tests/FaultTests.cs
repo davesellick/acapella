@@ -65,6 +65,60 @@ public sealed class FaultTests
     }
 
     [Fact]
+    public async Task Exact_zeros_with_every_privacy_switch_on_are_a_muted_microphone_not_Windows()
+    {
+        // 2026-10-17: a Wave XLR muted at its dial sent exact zeros, every switch was
+        // "Allow", and the panel still said Windows was blocking the microphone.
+        var hotkey = new FakeHotkeySource();
+        var capture = FakeAudioCapture.Silence(0.8);
+        capture.LooksLikeBlockedMicrophone = true;
+        capture.Privacy = new MicrophonePrivacy("Allow", "Allow", "Allow");
+        var faults = new List<string>();
+        var dropped = new List<string>();
+
+        await using var engine = new DictationEngine(capture, hotkey, new FakeTranscriber("hello"), new RecordingTextInjector(), () => []);
+        engine.Faulted += (_, m) => faults.Add(m);
+        engine.Dropped += (_, m) => dropped.Add(m);
+
+        hotkey.Press();
+        await Wait.UntilAsync(() => capture.Delivered);
+        hotkey.Release();
+        await SettleAsync(engine);
+
+        faults.ShouldBeEmpty();
+        dropped.ShouldHaveSingleItem().ShouldBe("Nothing heard. Is the mic muted?");
+    }
+
+    [Fact]
+    public async Task Exact_zeros_with_desktop_apps_switched_off_still_blame_Windows()
+    {
+        var hotkey = new FakeHotkeySource();
+        var capture = FakeAudioCapture.Silence(0.8);
+        capture.LooksLikeBlockedMicrophone = true;
+        capture.Privacy = new MicrophonePrivacy("Allow", "Allow", "Deny");
+        var faults = new List<string>();
+
+        await using var engine = new DictationEngine(capture, hotkey, new FakeTranscriber("hello"), new RecordingTextInjector(), () => []);
+        engine.Faulted += (_, m) => faults.Add(m);
+
+        hotkey.Press();
+        await Wait.UntilAsync(() => capture.Delivered);
+        hotkey.Release();
+        await SettleAsync(engine);
+
+        faults.ShouldHaveSingleItem().ShouldBe(DictationEngine.BlockedMicrophoneMessage);
+    }
+
+    [Theory]
+    [InlineData(null, null, null, false)]
+    [InlineData("Allow", "Allow", "Allow", false)]
+    [InlineData("Deny", "Allow", "Allow", true)]
+    [InlineData("Allow", "Deny", "Allow", true)]
+    [InlineData("Allow", "Allow", "deny", true)]
+    public void Privacy_blocks_only_when_a_switch_says_Deny(string? device, string? apps, string? desktop, bool blocks) =>
+        new MicrophonePrivacy(device, apps, desktop).Blocks.ShouldBe(blocks);
+
+    [Fact]
     public async Task A_missing_model_is_reported_and_nothing_is_typed()
     {
         var hotkey = new FakeHotkeySource();

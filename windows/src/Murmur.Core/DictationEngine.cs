@@ -1299,7 +1299,9 @@ public sealed class DictationEngine : IAsyncDisposable
             // Only a recording that was itself silent can mean the microphone is blocked.
             // The flag is a property of the device stream, and a stale one — a headset
             // muted for a call, unmuted since — must never throw away audible speech.
-            if (_capture.LooksLikeBlockedMicrophone)
+            // Exact zeros with every privacy switch on are a muted microphone, not Windows,
+            // so they fall through to the muted path below.
+            if (_capture.LooksLikeBlockedMicrophone && _capture.Privacy?.Blocks != false)
             {
                 Log.Warn("capture delivered only digital silence — microphone looks blocked");
                 Fault(BlockedMicrophoneMessage);
