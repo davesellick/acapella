@@ -63,6 +63,13 @@ public sealed class EditLearner
     /// <summary>The decision model's probability of a mishearing above which one fix is enough.</summary>
     public const double SureMishearing = 0.85;
 
+    /// <summary>
+    /// The decision model's probability of a mishearing below which a rarely said fix waits for
+    /// a second one: more likely a change of mind, as with not importantly -> importantly not
+    /// (Jev 0.34, 23/10/2026). With no answer the rarity alone still decides.
+    /// </summary>
+    public const double LikelyMishearing = 0.5;
+
     /// <summary>The probability below which the fix is taken to be a change of mind and dropped.</summary>
     public const double SureChangeOfMind = 0.2;
 
@@ -88,7 +95,7 @@ public sealed class EditLearner
                 // word said often waits for a second fix however sure it is (git -> gift).
                 var because = mishearing >= SureMishearing && _timesSaid(hear) <= SeldomSaid ? "Jev was sure it was a mishearing"
                     : suggestion.Count >= AddAfter ? $"you made this fix {suggestion.Count} times"
-                    : _timesSaid(hear) <= RarelySaid ? "you fixed it and hardly ever say it otherwise"
+                    : _timesSaid(hear) <= RarelySaid && !(mishearing < LikelyMishearing) ? "you fixed it and hardly ever say it otherwise"
                     : null;
                 if (because is null || !_addByItself())
                 {
