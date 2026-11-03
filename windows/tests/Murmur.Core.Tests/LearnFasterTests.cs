@@ -1,5 +1,7 @@
+using Murmur.Abstractions;
 using Murmur.Core;
 using Murmur.Dictionary;
+using Murmur.Testing;
 using Shouldly;
 using Xunit;
 
@@ -75,6 +77,23 @@ public sealed class FirstFixTests : IDisposable
 
         Has("Quilla", "Quiller").ShouldBeTrue();
         _suggestions.Learnt.ShouldHaveSingleItem().LearntBecause.ShouldBe("you fixed it and hardly ever say it otherwise");
+    }
+
+    [Theory]
+    [InlineData(0.34, false)]
+    [InlineData(0.6, true)]
+    public async Task A_rarely_said_fix_waits_when_jev_thinks_it_more_likely_a_change_of_mind(double mishearing, bool learnt)
+    {
+        string[] history = ["that workflow in Quilla", "lunch at noon"];
+        var jev = new FakeDecisionModel();
+        jev.Answers["mishearing"] = new Decision("mishearing", mishearing, null, null);
+        jev.Release.SetResult();
+        var learner = new EditLearner(_dictionary, _suggestions, () => jev, () => true, p => EditLearner.TimesSaid(history, p));
+
+        await learner.LearnAsync(Edit("that workflow in Quilla", "that workflow in Quiller"));
+
+        Has("Quilla", "Quiller").ShouldBe(learnt);
+        _suggestions.Pending.Count.ShouldBe(learnt ? 0 : 1);
     }
 
     [Fact]
