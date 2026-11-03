@@ -57,3 +57,11 @@ Remove an entry once every computer it names has had it.
   After installing: check that "Also hear me in the cloud" is set as Dave wants it there, and
   note that computer's name in the table; its log names other computers in lines that start
   `sync: settings from`.
+- **601bb47, a rarely said fix waits for a second edit when Jev thinks it a change of mind.**
+  Needed on: every Windows computer. Done on none yet; it sat on a local branch on
+  Sidgrove_9950x from 23/10/2026 until it was merged on 03/11/2026, so no build before then
+  has it.
+  Why: the learner lives in each copy, so a computer on an older build still learns a hardly
+  ever said fix after one edit whatever Jev made of it (how `not importantly` became
+  `importantly not` on 23/10/2026). Nothing to repair; a rule already learnt that way can be
+  removed in the Dictionary tab.
