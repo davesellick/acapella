@@ -11,7 +11,7 @@ in the repo and reaches every computer with the code.
 
 | Computer | OS | App | Installed build | Updated |
 |---|---|---|---|---|
-| Sidgrove_9950x | Windows 11 | Windows app, signed in to sync | 0b8436f, put back from 7c30e09 by mistake (see below) | 04/11/2026 |
+| Sidgrove_9950x | Windows 11 | Windows app, signed in to sync | aad08e1 | 04/11/2026 |
 | Sidgrove_Razer | Windows 11 | Windows app, not signed in to sync (its previous build, 3e7d572, predated sync) | 822f093 | 25/10/2026 |
 | Name not known yet: the other PC signed in to sync, seen pushing changes on 20/10/2026 | Windows | Windows app, signed in to sync | not known | not known |
 | Mac | macOS 26 | Mac app, no sync yet | not known | not known |
@@ -52,15 +52,9 @@ on another computer, add the entry in the same commit as the change.
 
 Remove an entry once every computer it names has had it.
 
-- **Sidgrove_9950x was put back to 0b8436f on 04/11/2026.**
-  Needed on: Sidgrove_9950x, a fresh publish and install from current main.
-  Why: a Sidgrove Intelligence session ran `install.ps1` four times that day (09:31, 10:03,
-  11:08 and 13:03) from the main checkout, whose `windows\dist` still held the build from
-  12/10/2026, and reported the app as up to date. That took off 9ec772c, 27a1037, 405bbcf and
-  the learner fixes a1e82d6 and e4d2e23. Hearing and clean-up code is the same in both builds.
 - **9ec772c, sync keeps settings changed on the PC doing the pulling.**
-  Needed on: every Windows computer signed in to sync. Sidgrove_9950x had it from 23/10/2026
-  and lost it on 04/11/2026; still needed on the other PC.
+  Needed on: every Windows computer signed in to sync. Done on Sidgrove_9950x (04/11/2026);
+  still needed on the other PC.
   Why: the fix lives in the copy doing the pulling. A computer on an older build still lets a
   first sync after signing in overwrite settings chosen on it (how cloud hearing went off on
   Sidgrove_9950x on 19/10/2026), and it still logs nothing when a pull changes a setting.
@@ -68,9 +62,9 @@ Remove an entry once every computer it names has had it.
   note that computer's name in the table; its log names other computers in lines that start
   `sync: settings from`.
 - **601bb47, a rarely said fix waits for a second edit when Jev thinks it a change of mind.**
-  Needed on: every Windows computer. Done on none yet; it sat on a local branch on
-  Sidgrove_9950x from 23/10/2026 until it was merged on 03/11/2026, so no build before then
-  has it.
+  Needed on: every Windows computer. Done on Sidgrove_9950x (04/11/2026); still needed on the
+  others. It sat on a local branch on Sidgrove_9950x from 23/10/2026 until it was merged on
+  03/11/2026, so no build before then has it.
   Why: the learner lives in each copy, so a computer on an older build still learns a hardly
   ever said fix after one edit whatever Jev made of it (how `not importantly` became
   `importantly not` on 23/10/2026). Nothing to repair; a rule already learnt that way can be
