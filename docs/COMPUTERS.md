@@ -65,3 +65,15 @@ Remove an entry once every computer it names has had it.
   ever said fix after one edit whatever Jev made of it (how `not importantly` became
   `importantly not` on 23/10/2026). Nothing to repair; a rule already learnt that way can be
   removed in the Dictionary tab.
+- **Clean-up moves to `gemini-3.5-flash-lite` and cloud hearing to `scribe_v3_live` (19/11/2026).**
+  Needed on: every Windows computer, before 01/12/2026. Done on none yet.
+  Why: from 01/12/2026 Google sends `gemini-2.5-flash` requests to `gemini-3.5-flash-lite`,
+  and an older build still asks for 2.5 Flash with a zero thinking budget, which 3.5
+  Flash-Lite refused on 10/10/2026. If the rerouting does not allow for that, clean-up fails
+  on every dictation and the words are typed as heard. Until a computer has the build, typing
+  `gemini-3.5-flash-lite` into Settings, Clean-up, Model does the same job; on a computer
+  signed in to sync that setting reaches the others. The Scribe change is not urgent: v2
+  still works.
+  After installing: dictate once and check the log says `clean-up: Whole by
+  gemini-3.5-flash-lite` and `cloud transcription by scribe_v3_live`. If Scribe v3 hears Dave
+  worse, put `scribe_v2_realtime` in `CloudTranscriptionModel` in `settings.json`.

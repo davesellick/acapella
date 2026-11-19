@@ -634,7 +634,7 @@ public sealed class TranscriptionsView : UserControl
 
     private static string Friendly(string model) => model switch
     {
-        "scribe_v2_realtime" => "ElevenLabs Scribe",
+        "scribe_v3_live" or "scribe_v2_realtime" => "ElevenLabs Scribe",
         _ => model,
     };
 }
