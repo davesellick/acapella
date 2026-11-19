@@ -11,7 +11,7 @@ in the repo and reaches every computer with the code.
 
 | Computer | OS | App | Installed build | Updated |
 |---|---|---|---|---|
-| Sidgrove_9950x | Windows 11 | Windows app, signed in to sync | aad08e1 | 04/11/2026 |
+| Sidgrove_9950x | Windows 11 | Windows app, signed in to sync | 39bc7e8 | 19/11/2026 |
 | Sidgrove_Razer | Windows 11 | Windows app, not signed in to sync (its previous build, 3e7d572, predated sync) | 822f093 | 25/10/2026 |
 | Name not known yet: the other PC signed in to sync, seen pushing changes on 20/10/2026 | Windows | Windows app, signed in to sync | not known | not known |
 | Mac | macOS 26 | Mac app, no sync yet | not known | not known |
@@ -70,7 +70,8 @@ Remove an entry once every computer it names has had it.
   `importantly not` on 23/10/2026). Nothing to repair; a rule already learnt that way can be
   removed in the Dictionary tab.
 - **Clean-up moves to `gemini-3.5-flash-lite` and cloud hearing to `scribe_v3_live` (19/11/2026).**
-  Needed on: every Windows computer, before 01/12/2026. Done on none yet.
+  Needed on: every Windows computer, before 01/12/2026. Done on Sidgrove_9950x (19/11/2026);
+  still needed on the others.
   Why: from 01/12/2026 Google sends `gemini-2.5-flash` requests to `gemini-3.5-flash-lite`,
   and an older build still asks for 2.5 Flash with a zero thinking budget, which 3.5
   Flash-Lite refused on 10/10/2026. If the rerouting does not allow for that, clean-up fails
