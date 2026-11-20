@@ -6,9 +6,14 @@ using Murmur.Abstractions;
 namespace Murmur.Speech;
 
 /// <summary>
-/// Cloud transcription on ElevenLabs Scribe v2 Realtime, fed while the key is held.
+/// Cloud transcription on ElevenLabs Scribe v3 Live, fed while the key is held.
 /// </summary>
 /// <remarks>
+/// <para>
+/// Scribe v3 Live replaced Scribe v2 Realtime as the default on 19/11/2026. It is the same
+/// socket with only <c>model_id</c> changed, and ElevenLabs claims 43% fewer errors; that
+/// claim has not been measured on Dave's recordings yet. The figures below are v2's.
+/// </para>
 /// <para>
 /// In September 2026 Scribe led the independent streaming benchmark (Artificial Analysis):
 /// 3.6% word errors with the final transcript 0.14 s after speech ends, against Gemini 3.5
@@ -24,7 +29,7 @@ namespace Murmur.Speech;
 public sealed class ElevenLabsTranscriber : IStreamingTranscriber
 {
     /// <summary>The model used unless settings say otherwise.</summary>
-    public const string DefaultModel = "scribe_v2_realtime";
+    public const string DefaultModel = "scribe_v3_live";
 
     /// <summary>Environment variable consulted for the key.</summary>
     public const string ApiKeyEnvironmentVariable = "ELEVENLABS_API_KEY";

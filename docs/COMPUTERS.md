@@ -11,7 +11,7 @@ in the repo and reaches every computer with the code.
 
 | Computer | OS | App | Installed build | Updated |
 |---|---|---|---|---|
-| Sidgrove_9950x | Windows 11 | Windows app, signed in to sync | 7c30e09 | 23/10/2026 |
+| Sidgrove_9950x | Windows 11 | Windows app, signed in to sync | 39bc7e8 | 19/11/2026 |
 | Sidgrove_Razer | Windows 11 | Windows app, not signed in to sync (its previous build, 3e7d572, predated sync) | 822f093 | 25/10/2026 |
 | Name not known yet: the other PC signed in to sync, seen pushing changes on 20/10/2026 | Windows | Windows app, signed in to sync | not known | not known |
 | Mac | macOS 26 | Mac app, no sync yet | not known | not known |
@@ -31,7 +31,11 @@ prints there.
    The Mac app does not stamp a commit yet, so go by the table.
 2. **Do what is waiting for it.** Every entry below that names this computer gets done as
    part of the update, not after it.
-3. **Install.** Windows: `windows\install.ps1`. Mac: `make install`.
+3. **Install.** Windows: `windows\publish.ps1`, then `windows\install.ps1`, then read the
+   version back as in step 1 and check it is the commit you meant. `install.ps1` only copies
+   whatever is in that checkout's `windows\dist`, which git does not track, so on its own it
+   can quietly put an old build back. It also force-stops the app, so a dictation in progress
+   is lost: ask Dave first. Mac: `make install`.
 4. **Update its row** in the table.
 5. **Then think about the others.** Run `git log <build>..HEAD` from the oldest build in the
    table and look for anything that touches sync, settings, keys or a file format. For each
@@ -49,7 +53,7 @@ on another computer, add the entry in the same commit as the change.
 Remove an entry once every computer it names has had it.
 
 - **9ec772c, sync keeps settings changed on the PC doing the pulling.**
-  Needed on: every Windows computer signed in to sync. Done on Sidgrove_9950x (23/10/2026);
+  Needed on: every Windows computer signed in to sync. Done on Sidgrove_9950x (04/11/2026);
   still needed on the other PC.
   Why: the fix lives in the copy doing the pulling. A computer on an older build still lets a
   first sync after signing in overwrite settings chosen on it (how cloud hearing went off on
@@ -58,10 +62,23 @@ Remove an entry once every computer it names has had it.
   note that computer's name in the table; its log names other computers in lines that start
   `sync: settings from`.
 - **601bb47, a rarely said fix waits for a second edit when Jev thinks it a change of mind.**
-  Needed on: every Windows computer. Done on none yet; it sat on a local branch on
-  Sidgrove_9950x from 23/10/2026 until it was merged on 03/11/2026, so no build before then
-  has it.
+  Needed on: every Windows computer. Done on Sidgrove_9950x (04/11/2026); still needed on the
+  others. It sat on a local branch on Sidgrove_9950x from 23/10/2026 until it was merged on
+  03/11/2026, so no build before then has it.
   Why: the learner lives in each copy, so a computer on an older build still learns a hardly
   ever said fix after one edit whatever Jev made of it (how `not importantly` became
   `importantly not` on 23/10/2026). Nothing to repair; a rule already learnt that way can be
   removed in the Dictionary tab.
+- **Clean-up moves to `gemini-3.5-flash-lite` and cloud hearing to `scribe_v3_live` (19/11/2026).**
+  Needed on: every Windows computer, before 01/12/2026. Done on Sidgrove_9950x (19/11/2026);
+  still needed on the others.
+  Why: from 01/12/2026 Google sends `gemini-2.5-flash` requests to `gemini-3.5-flash-lite`,
+  and an older build still asks for 2.5 Flash with a zero thinking budget, which 3.5
+  Flash-Lite refused on 10/10/2026. If the rerouting does not allow for that, clean-up fails
+  on every dictation and the words are typed as heard. Until a computer has the build, typing
+  `gemini-3.5-flash-lite` into Settings, Clean-up, Model does the same job; on a computer
+  signed in to sync that setting reaches the others. The Scribe change is not urgent: v2
+  still works.
+  After installing: dictate once and check the log says `clean-up: Whole by
+  gemini-3.5-flash-lite` and `cloud transcription by scribe_v3_live`. If Scribe v3 hears Dave
+  worse, put `scribe_v2_realtime` in `CloudTranscriptionModel` in `settings.json`.

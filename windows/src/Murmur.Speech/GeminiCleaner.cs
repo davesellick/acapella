@@ -15,9 +15,13 @@ namespace Murmur.Speech;
 /// <para>
 /// Calls the Generative Language REST endpoint directly rather than through an SDK — the
 /// same way the Sidgrove Intelligence app does — so there is one small request shape to
-/// understand and nothing to trim out of the single-file bundle. <c>gemini-2.5-flash</c>
-/// with thinking switched off: this is a rewrite, not a reasoning task, and every hundred
-/// milliseconds is felt between key-up and text.
+/// understand and nothing to trim out of the single-file bundle. <c>gemini-3.5-flash-lite</c>
+/// with thinking at its lowest: this is a rewrite, not a reasoning task, and every hundred
+/// milliseconds is felt between key-up and text. It replaced <c>gemini-2.5-flash</c> on
+/// 19/11/2026 because Google routes that name to this model from 01/12/2026, and the zero
+/// thinking budget 2.5 Flash took is an invalid argument here (see <see cref="ThinkingOff"/>).
+/// On 40 of Dave's dictations the day before, 2.5 Flash left 6.3% of words wrong in 0.64 s
+/// with a head start as the model that had typed them, and this one 8.7% in 0.77 s.
 /// </para>
 /// <para>
 /// The prompt is the whole product here. It is written to <i>subtract</i> — fillers, false
@@ -33,7 +37,7 @@ namespace Murmur.Speech;
 public sealed partial class GeminiCleaner : ITranscriptCleaner, IDisposable
 {
     /// <summary>The model used unless settings say otherwise.</summary>
-    public const string DefaultModel = "gemini-2.5-flash";
+    public const string DefaultModel = "gemini-3.5-flash-lite";
 
     /// <summary>Environment variable consulted when no key is set in the app.</summary>
     public const string ApiKeyEnvironmentVariable = "GEMINI_API_KEY";

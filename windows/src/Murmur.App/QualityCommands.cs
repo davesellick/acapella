@@ -22,7 +22,7 @@ internal static class QualityCommands
     /// <summary>British dates and numbers in what is printed.</summary>
     private static readonly CultureInfo Uk = CultureInfo.GetCultureInfo("en-GB");
 
-    /// <summary>Prices per million tokens, input then output, as of 25/09/2026. Anything unknown is priced as 2.5 Flash.</summary>
+    /// <summary>Prices per million tokens, input then output, as of 25/09/2026. Anything unknown is priced as the default model.</summary>
     private static readonly Dictionary<string, (double In, double Out)> Prices = new(StringComparer.OrdinalIgnoreCase)
     {
         ["gemini-2.5-flash"] = (0.30, 2.50),

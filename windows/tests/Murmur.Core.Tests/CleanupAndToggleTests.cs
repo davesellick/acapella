@@ -27,12 +27,14 @@ public sealed class GeminiCleanerTests
         cleaned.ShouldBe("Can you send me the Q2 numbers by Thursday");
         // The full URL, not a substring: the old (base, relative) construction produced a URI
         // whose *scheme* was "gemini-2.5-flash", which contained the substring and passed.
-        server.LastRequestUri!.ToString().ShouldBe("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent");
+        server.LastRequestUri!.ToString().ShouldBe("https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent");
         server.LastRequestUri.Scheme.ShouldBe("https");
         server.LastKeyHeader.ShouldBe("test-key");
         server.LastBody.ShouldContain("systemInstruction");
         server.LastBody.ShouldContain("scratch that");
-        server.LastBody.ShouldContain("\"thinkingBudget\":0");
+        // 3.5 Flash-Lite refuses a zero budget; its lowest setting is the level "minimal".
+        server.LastBody.ShouldContain("\"thinkingLevel\":\"minimal\"");
+        server.LastBody.ShouldNotContain("thinkingBudget");
     }
 
     [Fact]
