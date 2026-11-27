@@ -21,6 +21,17 @@ prints there.
 
 ## When Dave asks to update the app on a computer
 
+**On Windows, `windows\update.ps1` does steps 1, 3 and 4 in one command**, and "git pull" from
+Dave means this. Run `windows\update.ps1 -CheckOnly` first (about two seconds, changes
+nothing): it fetches, lists the incoming commits and says whether a rebuild is needed, which
+is only when something under `windows/` or `shared/` changed since the installed build. If it
+is, ask Dave before the real run, because installing force-stops the app. Then run
+`windows\update.ps1`, which fast-forwards to origin/main, publishes with the self-test,
+installs, checks the version and updates this computer's row. Report what it printed rather
+than repeating its steps by hand, then do steps 2, 5 and 6 below. It refuses a checkout with
+uncommitted changes or commits of its own, so run it from a clean branch that main can
+fast-forward.
+
 1. **Find what it runs now.** On Windows the installed exe carries the commit it was built
    from, after the `+`:
 
