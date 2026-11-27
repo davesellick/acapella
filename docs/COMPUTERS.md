@@ -24,7 +24,7 @@ prints there.
 **On Windows, `windows\update.ps1` does steps 1, 3 and 4 in one command**, and "git pull" from
 Dave means this. Run `windows\update.ps1 -CheckOnly` first (about two seconds, changes
 nothing): it fetches, lists the incoming commits and says whether a rebuild is needed, which
-is only when something under `windows/` or `shared/` changed since the installed build. If it
+is only when something that goes into the app (`windows/src`, the build props or `shared/`) changed since the installed build. If it
 is, ask Dave before the real run, because installing force-stops the app. Then run
 `windows\update.ps1`, which fast-forwards to origin/main, publishes with the self-test,
 installs, checks the version and updates this computer's row. Report what it printed rather

@@ -8,7 +8,7 @@
 
     1. fetch origin and fast-forward this checkout to origin/main
     2. read the commit the installed exe was built from
-    3. skip the build when nothing under windows/ or shared/ changed since that commit
+    3. skip the build when nothing that goes into the app changed since that commit
     4. otherwise publish.ps1 (with its self-test), install.ps1, then read the version back
     5. update this computer's row in docs/COMPUTERS.md
 
@@ -72,14 +72,15 @@ if (-not $installed) {
 } else {
     $installed = (Invoke-Git rev-parse $installed).Trim()
     Write-Host "installed  $($installed.Substring(0,7))"
-    & git diff --quiet $installed $target -- windows shared
+    # Only what goes into the exe; scripts, tests and docs beside it don't need a rebuild.
+    & git diff --quiet $installed $target -- windows/src windows/Directory.Build.props windows/Directory.Packages.props windows/global.json shared
     $needsBuild = $LASTEXITCODE -ne 0
 }
 if ($Force) { $needsBuild = $true }
 
 if ($CheckOnly) {
     if (-not $needsBuild) {
-        Write-Host 'result     no rebuild needed: nothing under windows/ or shared/ changed since the installed build'
+        Write-Host 'result     no rebuild needed: nothing that goes into the app changed since the installed build'
     } else {
         Write-Host 'result     rebuild needed; installing will force-stop Acapella, so ask Dave before the real run'
     }
@@ -89,7 +90,7 @@ if ($CheckOnly) {
 if ($head -ne $target) { Invoke-Git merge --ff-only --quiet $target | Out-Null }
 
 if (-not $needsBuild) {
-    Write-Host 'result     up to date: nothing under windows/ or shared/ changed since the installed build, so no rebuild'
+    Write-Host 'result     up to date: nothing that goes into the app changed since the installed build, so no rebuild'
     return
 }
 
